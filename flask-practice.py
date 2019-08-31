@@ -32,12 +32,20 @@ def newMenuItem(restaurant_id):
                            restaurant_id=restaurant_id)
         session.add(newItem)
         session.commit()
-        return redirect('restaurantMenu', restaurant_id=restaurant_id)
+        return redirect(url_for('restaurantMenu', restaurant_id=restaurant_id))
     return render_template("newmenuitem.html", restaurant_id=restaurant_id)
 
-@app.route("/restaurants/<int:restaurant_id>/<int:menu_id>/edit")
+@app.route("/restaurants/<int:restaurant_id>/<int:menu_id>/edit", methods=["GET", "POST"])
 def editMenuItem(restaurant_id, menu_id):
-    return "page to edit a menu item. Task 2 complete!"
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
+    edititem = session.query(MenuItem).filter_by(id=menu_id).one()
+    if request.method == "POST":
+        edititem.name = request.form['name']
+        session.add(edititem)
+        session.commit
+        return redirect(url_for('restaurantMenu', restaurant_id=restaurant_id))
+    return render_template("editmenuitem.html", item=edititem, restaurant_id=restaurant_id, menu_id=menu_id)
 
 
 @app.route("/restaurants/<int:restaurant_id>/<int:menu_id>/delete")
