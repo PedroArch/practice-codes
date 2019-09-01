@@ -43,15 +43,22 @@ def editMenuItem(restaurant_id, menu_id):
     if request.method == "POST":
         edititem.name = request.form['name']
         session.add(edititem)
-        session.commit
+        session.commit()
         return redirect(url_for('restaurantMenu', restaurant_id=restaurant_id))
     return render_template("editmenuitem.html", item=edititem, restaurant_id=restaurant_id, menu_id=menu_id)
 
 
 @app.route("/restaurants/<int:restaurant_id>/<int:menu_id>/delete")
 def deleteMenuItem(restaurant_id, menu_id):
-    return "page to delete a menu item. Task 3 complete!"
-
+    def deleteMenuItem(restaurant_id, menu_id):
+        DBSession = sessionmaker(bind=engine)
+        session = DBSession()
+        deleteitem = session.query(MenuItem).filter_by(id=menu_id).one()
+        if request.method == "POST":
+            session.delete(deleteitem)
+            session.commit()
+            return redirect(url_for('restaurantMenu', restaurant_id=restaurant_id))
+        return render_template("deletemenuitem.html", item=deleteitem, restaurant_id=restaurant_id, menu_id=menu_id)
 # End of File #
 
 if __name__ == "__main__":
