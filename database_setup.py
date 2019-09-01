@@ -23,6 +23,15 @@ class MenuItem(Base):
     restaurant_id = Column(Integer, ForeignKey('restaurant.id'))
     restaurant = relationship(Restaurant)
 
+    @property
+    def serialize(self):
+        return {
+            'name' : self.name,
+            'description': self.description,
+            'price': self.price,
+            'course': self.course,
+        }
+
 # End of File #
 
 
